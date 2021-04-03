@@ -1,65 +1,79 @@
 import React, { Component } from 'react'
 
+const initialState = {
+    result: 0,
+    currentValue: "0",
+    displayScreenValue: "0",
+    lastOperator: "+",
+    opDuplicatingCount: 0
+}
+
 export default class Calculator extends Component {
-    state = {
-        result: 0,
-        currentValue: "0",
-        displayScreenValue: "0",
-        lastOperator: "+",
-        opDuplicatingCount: 0
-    }
+    state = initialState;
 
     keyPressHandler = (buttonValue) => {
         console.log(buttonValue);
         // @=CE $=C
-        if ("+-*÷=".indexOf(buttonValue) === -1) {
-            if (this.state.currentValue === "0") {
-                this.setState({
-                    currentValue: buttonValue,
-                    displayScreenValue: buttonValue
-                });
-            } else {
-                this.setState({
-                    currentValue: this.state.currentValue + buttonValue,
-                    displayScreenValue: this.state.currentValue + buttonValue
-                })
+        if ("@$".indexOf(buttonValue) !== -1) {
+            if (buttonValue === "@") {
+                this.setState(initialState);
             }
-            this.setState({
-                opDuplicatingCount: 0
-            })
+            if (buttonValue === "$") {
+                this.setState({
+                    currentValue: "0",
+                    displayScreenValue: "0"
+                });
+            }
         } else {
-            if (this.state.opDuplicatingCount < 1) {
-                let tempResult;
-                if ("+-*÷=".indexOf(this.state.lastOperator) !== -1) {
-                    switch (this.state.lastOperator) {
-                        case "+":
-                            tempResult = parseFloat(this.state.result) + parseFloat(this.state.currentValue);
-                            break;
-                        case "-":
-                            tempResult = parseFloat(this.state.result) - parseFloat(this.state.currentValue);
-                            break;
-                        case "*":
-                            tempResult = parseFloat(this.state.result) * parseFloat(this.state.currentValue);
-                            break;
-                        default:
-                            tempResult = parseFloat(this.state.result) / parseFloat(this.state.currentValue);
-                    }
+            if ("+-*÷=".indexOf(buttonValue) === -1) {
+                if (this.state.currentValue === "0") {
                     this.setState({
-                        currentValue: "0",
-                        result: tempResult,
-                        displayScreenValue: tempResult
+                        currentValue: buttonValue,
+                        displayScreenValue: buttonValue
+                    });
+                } else {
+                    this.setState({
+                        currentValue: this.state.currentValue + buttonValue,
+                        displayScreenValue: this.state.currentValue + buttonValue
                     })
                 }
-
                 this.setState({
-                    opDuplicatingCount: this.state.opDuplicatingCount + 1
+                    opDuplicatingCount: 0
+                })
+            } else {
+                if (this.state.opDuplicatingCount < 1) {
+                    let tempResult;
+                    if ("+-*÷=".indexOf(this.state.lastOperator) !== -1) {
+                        switch (this.state.lastOperator) {
+                            case "+":
+                                tempResult = parseFloat(this.state.result) + parseFloat(this.state.currentValue);
+                                break;
+                            case "-":
+                                tempResult = parseFloat(this.state.result) - parseFloat(this.state.currentValue);
+                                break;
+                            case "*":
+                                tempResult = parseFloat(this.state.result) * parseFloat(this.state.currentValue);
+                                break;
+                            default:
+                                tempResult = parseFloat(this.state.result) / parseFloat(this.state.currentValue);
+                        }
+                        this.setState({
+                            currentValue: "0",
+                            result: tempResult,
+                            displayScreenValue: tempResult
+                        })
+                    }
+
+                    this.setState({
+                        opDuplicatingCount: this.state.opDuplicatingCount + 1
+                    })
+                }
+                this.setState({
+                    lastOperator: buttonValue
                 })
             }
-            this.setState({
-                lastOperator: buttonValue
-            })
-
         }
+
     }
 
     componentDidUpdate = () => {
